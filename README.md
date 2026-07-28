@@ -7,7 +7,7 @@
 
 ```text
 skills/
-├── commit/
+├── my-commit/
 │   ├── SKILL.md
 │   └── agents/openai.yaml
 └── my-distill/
@@ -29,7 +29,7 @@ npx skills add jaypume/my-skills --list
 全局安装指定 skill：
 
 ```bash
-npx skills add jaypume/my-skills --skill commit -g
+npx skills add jaypume/my-skills --skill my-commit -g
 ```
 
 全局安装全部 skills：
@@ -41,7 +41,7 @@ npx skills add jaypume/my-skills --skill '*' -g
 也可以指定 agent，并用 `-y` 跳过交互确认：
 
 ```bash
-npx skills add jaypume/my-skills --skill commit -g -a codex -y
+npx skills add jaypume/my-skills --skill my-commit -g -a codex -y
 ```
 
 私有仓库或需要 SSH 身份验证时，直接使用 Git URL：
