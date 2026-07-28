@@ -1,4 +1,0 @@
-interface:
-  display_name: "对话知识蒸馏"
-  short_description: "从最近对话提炼可复用调研、选型判断与长期方法，并安全沉淀到公开 Wiki"
-  default_prompt: "使用 $my-distill 蒸馏最近三轮实质对话中值得长期保留的调研与方案选型知识。"

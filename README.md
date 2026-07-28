@@ -8,15 +8,15 @@
 ```text
 skills/
 ├── my-commit/
-│   ├── SKILL.md
-│   └── agents/openai.yaml
-└── my-distill/
+│   └── SKILL.md
+└── my-wiki/
     ├── SKILL.md
-    └── agents/openai.yaml
+    └── config.example.toml
 ```
 
 每个 skill 至少包含一个 `SKILL.md`，其 YAML frontmatter 必须提供唯一的
-`name` 和清晰的 `description`。`agents/openai.yaml` 是可选的 OpenAI UI 元数据。
+`name` 和清晰的中文 `description`。机器相关路径放在不纳入 Git 的
+`config.local.toml`，仓库只保留无隐私信息的 `config.example.toml`。
 
 ## 使用
 

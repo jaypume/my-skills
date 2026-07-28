@@ -1,9 +1,9 @@
 ---
-name: my-distill
-description: Distill durable research findings, option comparisons, architecture trade-offs, reusable methods, and open questions from the latest substantive turns of the current conversation into the user's public Wiki. Use when the user invokes my-distill, asks to 蒸馏/沉淀/保存刚才或最近几轮对话, or wants recurring AI coding and LLM agent practices organized into a maintained topic rather than left in chat.
+name: my-wiki
+description: 将当前对话最近几轮中的长期知识、方案权衡、架构判断、可复用方法和待验证问题沉淀到用户的公开 Wiki。用户调用 $my-wiki，要求蒸馏、沉淀、保存最近对话，或希望把 AI coding 与 LLM agent 实践整理为持续维护的专题时使用。
 ---
 
-# My Distill
+# Wiki 知识沉淀
 
 把对话当作候选线索，不当作事实来源。默认从最近 3 个实质讨论轮次提炼少量、可复用、可追溯的知识，并按 Wiki 的现行协议完成一次闭环写入。
 
@@ -12,7 +12,7 @@ description: Distill durable research findings, option comparisons, architecture
 1. 只使用触发时**当前对话已经可见的上下文**，不要查找或读取外部会话文件。
 2. 默认回溯触发语之前最近 3 个**实质讨论轮次**。一个轮次包含一条实质用户消息，以及下一条实质用户消息前的 assistant 调研、分析和结论。
 3. 排除本次纯触发指令、系统/开发者指令、环境信息、插件清单、工具调用噪音和状态播报。
-4. 若触发消息除 `$my-distill` 外还包含新的实质信息，把该信息纳入候选；若只是触发语则不计入 3 轮。
+4. 若触发消息除 `$my-wiki` 外还包含新的实质信息，把该信息纳入候选；若只是触发语则不计入 3 轮。
 5. 当前可见上下文少于 3 轮时使用全部，不要为了凑满轮次去扫描本地会话文件。
 
 ## 2. 筛选候选
@@ -54,7 +54,9 @@ description: Distill durable research findings, option comparisons, architecture
 
 ## 4. 定位并读取 Wiki
 
-默认 Wiki 根目录为 `/Users/pj/code/notes/selfos/wiki`；用户明确指定时使用其路径。
+1. 用户明确指定 Wiki 路径时优先使用该路径。
+2. 否则读取本 skill 同目录的 `config.local.toml`，从 `wiki_root` 取得根目录；展开开头的 `~`。
+3. 若本地配置不存在、字段为空或路径无效，停止写入并提示用户参考 `config.example.toml` 完成本机配置。
 
 写入前必须：
 
