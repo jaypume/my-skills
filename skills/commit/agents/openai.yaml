@@ -1,0 +1,4 @@
+interface:
+  display_name: "安全提交"
+  short_description: "审查改动、排除敏感文件并创建范围清晰且可追溯的安全 Git 提交"
+  default_prompt: "使用 $commit 检查并提交当前仓库的修改。"
