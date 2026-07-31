@@ -1,3 +1,5 @@
-# 机器本地配置：不得提交私人路径或身份信息。
+# 机器本地配置：本机信息统一放在 ~/.config/my-skills/config.toml，
+# 仓库不再保留任何 skill 目录下的本地配置文件。
+# 防御性兜底：若有人误把旧式本地配置放进仓库，也拒绝提交。
 skills/*/config.local.toml
 skills/*/.env

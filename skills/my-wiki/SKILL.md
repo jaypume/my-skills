@@ -55,8 +55,9 @@ description: 将当前对话最近几轮中的长期知识、方案权衡、架�
 ## 4. 定位并读取 Wiki
 
 1. 用户明确指定 Wiki 路径时优先使用该路径。
-2. 否则读取本 skill 同目录的 `config.local.toml`，从 `wiki_root` 取得根目录；展开开头的 `~`。
-3. 若本地配置不存在、字段为空或路径无效，停止写入并提示用户参考 `config.example.toml` 完成本机配置。
+2. 否则读取共享配置文件 `~/.config/my-skills/config.toml` 中 `[my-wiki]` 表的 `wiki_root`；路径开头的 `~` 展开为家目录。
+3. 若文件不存在、对应表/字段缺失、字段为空或路径无效，停止写入并提示用户参考 `config.example.toml` 创建本机配置。
+4. 同一份配置被 my-skills 下所有 skill 共享；非 `[my-wiki]` 字段对本 skill 无意义，按 TOML namespace 隔离。
 
 写入前必须：
 

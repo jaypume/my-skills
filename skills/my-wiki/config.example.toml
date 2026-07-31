@@ -1,2 +1,7 @@
-# 复制为 config.local.toml，并填写当前机器的 Wiki 根目录。
+# my-skills 共享配置示例：复制到 ~/.config/my-skills/config.toml 后按需填写。
+# 所有 my-* skill 共用同一份配置；每个 skill 读取自己的命名空间（[my-wiki] / [my-commit] / [my-learn]），避免字段冲突。
+# 文件路径固定为 ~/.config/my-skills/config.toml；skill 不再读取本目录下的 config.local.toml。
+
+[my-wiki]
+# 公开 Wiki 仓库的根目录（绝对路径，开头的 ~ 会被展开为家目录）。
 wiki_root = "/path/to/public-wiki"

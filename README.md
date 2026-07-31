@@ -15,8 +15,9 @@ skills/
 ```
 
 每个 skill 至少包含一个 `SKILL.md`，其 YAML frontmatter 必须提供唯一的
-`name` 和清晰的中文 `description`。机器相关路径放在不纳入 Git 的
-`config.local.toml`，仓库只保留无隐私信息的 `config.example.toml`。
+`name` 和清晰的中文 `description`。机器相关配置集中在用户家目录的共享
+文件 `~/.config/my-skills/config.toml`，各 skill 按命名空间读取；
+`config.example.toml` 仅作为字段示例参考，不会被读取。
 
 ## 使用
 
@@ -49,6 +50,23 @@ npx skills add jaypume/my-skills --skill my-commit -g -a codex -y
 ```bash
 npx skills add git@github.com:jaypume/my-skills.git --list
 ```
+
+
+## 配置
+
+本机配置集中在 `~/.config/my-skills/config.toml`，被所有 my-* skill 共享读取。
+各 skill 只关心自己命名空间下的字段，避免互相污染。
+
+首次使用时，参考 `skills/<skill-name>/config.example.toml` 创建该文件，
+并把示例中需要的本机路径填入对应 skill 的表。例如：
+
+```toml
+[my-wiki]
+wiki_root = "~/code/notes/selfos/wiki"
+```
+
+该文件不应提交到任何仓库；路径不存在或字段缺失时，相应 skill 应当停止
+写入并提示用户完成配置，而不是擅自猜测或回退到默认值。
 
 ## 开发
 
