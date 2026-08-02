@@ -1,11 +1,11 @@
 ---
 name: my-learn
-description: 召回并积累当前项目中可跨任务复用、稳定且非显然的调研结论、需求、架构取舍、用户纠错、项目约定和 debug 经验。用户调用 $my-learn、$my-learn setup，询问“之前为什么这样做/是否踩过这个坑”，或预计本次工作会产生上述持久知识时使用；一次性或本机配置、机械性维护、简单查询、照单执行和容易重新发现的事实默认不触发。
+description: 召回并积累当前项目中可跨任务复用、稳定且非显然的调研结论、需求、架构取舍、用户纠错、项目约定和 debug 经验。用户调用 $my-learn、$my-learn setup，询问"之前为什么这样做/是否踩过这个坑"，或预计本次工作会产生上述持久知识时使用；一次性或本机配置、机械性维护、简单查询、照单执行和容易重新发现的事实默认不触发。
 ---
 
 # 项目经验积累
 
-把项目 memory 当作可维护的检索入口，而不是聊天归档。优先帮助当前任务复用已有结论，再把本次新增的稳定知识写回项目唯一真相源或 memory。
+把项目 memory 当作可维护的检索入口，而不是聊天归档。优先帮助当前任务复用已有结论，再把本次新增的稳定知识写回全局 memory 或项目唯一真相源。
 
 ## 1. 先过持久化门槛
 
@@ -25,22 +25,44 @@ description: 召回并积累当前项目中可跨任务复用、稳定且非显�
 - 原因明显、无需多轮试错的临时故障，或只服务当前会话的 workaround；
 - 虽然耗时或修改文件较多，但没有形成跨任务可复用知识的工作。
 
-不要因为任务涉及“配置”、调用了工具、进行了搜索或看起来复杂，就自动启用本 skill。拿不准时默认跳过；若任务中途意外发现了稳定、非显然且很可能复用的结论，再从发现点开始启用，必要时补做相关召回。
+不要因为任务涉及"配置"、调用了工具、进行了搜索或看起来复杂，就自动启用本 skill。拿不准时默认跳过；若任务中途意外发现了稳定、非显然且很可能复用的结论，再从发现点开始启用，必要时补做相关召回。
 
-## 2. 选择模式
+## 2. Memory 位置与全局约定
+
+**全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。**项目层** `<project>/.agents/memory/INDEX.md` 仅是代理入口——只保留一个文件，内容指向全局。详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
+
+**索引文件名**：用 `INDEX.md`，不用 `MEMORY.md`——`MEMORY.md` 是 Claude Code / pi 等工具默认识别名，会被 auto-memory 机制接管。
+
+## 3. 6 维度分类（写入前先问）
+
+每条 memory 写到全局对应子目录：
+
+```
+1. 个人偏好？         → personal/
+2. 工作方法/流程？    → methodology/
+3. 通用工程 gotcha？  → common/
+4. 特定工具/库的坑？   → external/
+5. 跨项目领域知识？    → domains/<field>/
+6. 只此一项目用？      → projects/<github-id>/<repo>/
+```
+
+前 5 个是跨项目维度，第 6 个是项目维度。换项目还能用 → 跨项目；只本项目用 → projects。
+
+判断更细的 `metadata.type` 字段保留原 5 档（`requirement | decision | research | pitfall | convention`），与维度正交。
+
+## 4. 选择模式
 
 ### Setup
 
 用户调用 `$my-learn setup` 时执行一次性接入：
 
 1. 定位最近的 Git 根；不在 Git 仓库时使用当前 workspace 根。
-2. 完整读取适用的 `AGENTS.md`、`CLAUDE.md`、`.gitignore` 和已有 memory 规则。
+2. 完整读取适用的 `AGENTS.md`、`CLAUDE.md`、`.gitignore`。
 3. 读取 [`assets/agents-rule.md`](assets/agents-rule.md)，根据现有协议生成完整变更预览。
 4. 一次展示并确认：
-   - 将写入哪个指令文件及插入位置；
-   - 是否创建 `.agents/memory/MEMORY.md`；
-   - memory 采用 **tracked**（默认建议）还是 **private**；
-   - tracked/private 模式需要怎样调整 `.gitignore`；
+   - 项目层 `<repo>/.agents/memory/INDEX.md` 的内容（代理模式：声明全局在 `~/.agents/memory/`）；
+   - 是否已有全局 `~/.agents/memory/` git 仓；没有则建议先 `git init` 并加 remote；
+   - 项目层 INDEX.md 是否纳入 git 跟踪（默认 tracked，让 agent 工具能找到路径约定）；
    - 是否需要同步现有的 AGENTS/CLAUDE 兼容关系。
 5. 只有用户确认后才执行预览中的变更。
 
@@ -50,8 +72,7 @@ Setup 必须遵守：
 - 已存在正确的 `CLAUDE.md -> AGENTS.md` symlink 时只修改 `AGENTS.md`。
 - 两个独立指令文件存在实质冲突时停止，请用户确定唯一真相源。
 - 使用 `<!-- my-learn:start -->` / `<!-- my-learn:end -->` 标记规则块；重复运行只更新该块，不追加副本。
-- tracked 模式下确保 `.agents/memory/` 未被项目 ignore；private 模式下确保根 `.gitignore` 包含 `/.agents/memory/`。
-- 新建空索引时固定使用 `# Memory Index`，不要自行发明其他标题。
+- 新建项目层 INDEX.md 时固定内容"代理模式 + 全局在 `~/.agents/memory/`"，不要自行发明其他标题。
 - 不把机器绝对路径写入可提交文件。
 
 ### Recall and capture
@@ -65,24 +86,24 @@ Setup 必须遵守：
 
 显式调用 `$my-learn` 且没有其他任务时，复盘当前可见的实质对话与已验证证据；不要读取外部会话日志来补齐上下文。
 
-## 3. 召回
+## 5. 召回
 
-1. 从项目指令确定 memory 根；没有约定时默认使用 `<project>/.agents/memory/`。
+1. 先读项目层 `<project>/.agents/memory/INDEX.md`，按约定跳到全局 `~/.agents/memory/INDEX.md`。
 2. 目录或索引不存在时视为尚无历史，不报错、不在召回阶段擅自初始化。
-3. 先读 `MEMORY.md`，再用任务关键词、精确错误文本、组件、文件名、符号和技术名搜索。
+3. 用任务关键词、精确错误文本、组件、文件名、符号和技术名搜索全局 INDEX.md 的 6 维度分组。
 4. 只打开最相关的少量条目；不要一次加载整个目录。
 5. 将 memory 作为线索：
    - 易漂移且可低成本验证的事实，先从当前代码、测试或一手来源复核；
    - 与当前仓库状态冲突时，以当前证据为准，并在沉淀阶段处理旧条目；
    - 不把历史结论伪装成已经实时验证的事实。
 
-如果代码、测试、正式文档或可用的 code graph 已能低成本回答问题，优先使用它们；memory 只补充“为什么”、失败边界或定位入口。
+如果代码、测试、正式文档或可用的 code graph 已能低成本回答问题，优先使用它们；memory 只补充"为什么"、失败边界或定位入口。
 
-## 4. 收集候选
+## 6. 收集候选
 
-在工作过程中静默留意以下类型：
+在工作过程中静默留意以下类型（frontmatter `metadata.type` 字段）：
 
-| 类型 | 应记录 | 不应记录 |
+| type | 应记录 | 不应记录 |
 |---|---|---|
 | `requirement` | 会影响后续任务的行为、边界、验收标准和用户纠错 | 一次性执行指令、临时进度 |
 | `decision` | 已明确的架构选择、替代方案、理由与代价 | 尚未收敛的随口设想 |
@@ -102,31 +123,54 @@ Setup 必须遵守：
 
 不要记录凭据、密钥、令牌、个人身份信息或无关的完整日志。不要为了产生 memory 而硬凑候选。
 
-## 5. 选择唯一真相源
+## 7. 选择唯一真相源
 
 写入前搜索现有 spec、ADR、计划、项目文档、代码注释、测试和 memory：
 
 1. 需求、架构和调研已有正式载体时，更新该唯一真相源；memory 只保存简短结论、触发词和仓库相对链接。
-2. 没有正式载体且结论足够稳定时，在 memory 写完整的精炼条目。
+2. 没有正式载体且结论足够稳定时，在全局 memory 写完整的精炼条目（按 6 维度选目录）。
 3. 同一事实已存在时更新原条目，不创建近义副本。
-4. 细粒度 debug 只在当前任务本来就授权修改代码、且需要解释非显然 invariant 或 “why” 时写代码注释；遵循仓库注释语言，不写排错流水账。
+4. 细粒度 debug 只在当前任务本来就授权修改代码、且需要解释非显然 invariant 或 "why" 时写代码注释；遵循仓库注释语言，不写排错流水账。
 5. 代码、测试、文档或 code graph 已足够发现的事实，跳过或只记录定位索引。
 6. 不因结论过时而删除已有 memory；保留历史条目并标记 `superseded`，让后续任务能理解旧结论为何失效。
 
-## 6. 写入 memory
+## 8. 写入 memory
 
-默认一条事实一个短 kebab-case 文件，并同步 `MEMORY.md` 索引。若项目已有格式，严格复用；否则使用：
+### 触发权重（frontmatter `source` 字段区分）
+
+`frontmatter.metadata.source` 字段区分两类沉淀来源：
+
+| source | 触发方式 | confidence | 落位 |
+|---|---|---|---|
+| `user-curated` | 用户显式调用 `$my-learn` / `$my-learn setup`，由 agent 协助回忆+沉淀 | 默认 `high` | 6 维度顶层目录 |
+| `session-observation` | hook 自动观察 session 提取（ECC v2.1 / Claude Code auto memory） | 0.3-0.9 自评 | 对应维度内 `_auto/` 子目录 |
+
+agent 加载时按 `source` 优先级 `user-curated > session-observation`。这保证人工 gate（my-learn）始终压过自动积累（hook），避免噪声污染主索引。`last_verified` 半年 review 时同标准处理两类条目，但 `session-observation` 类更激进：连续 30 天无命中可触发 TTL 清理。
+
+### 文件命名约定
+
+- **文件名**：英文短 kebab-case（git log / `rg` / shell escape 友好）。中文文件名技术 OK 但降低跨工具一致性。
+- **frontmatter `name`**：必须英文 kebab-case，是 agent 工具的索引键（与文件名一致）。
+- **frontmatter `title`**：可中文，人类阅读用，agent 显示用。
+- **frontmatter `description`**：中文一句话，含触发条件与结论。
+- **正文**：中文（selfos 现状），代码、日志、命令保留英文。
+
+### 模板
 
 ```markdown
 ---
 name: short-kebab-case-name
-description: 一句话说明触发条件与结论
+title: 中文标题（可选）
+description: 中文一句话，含触发条件与结论
 metadata:
   type: requirement|decision|research|pitfall|convention
   status: active|needs-review|superseded
-  confidence: high|medium|low
+  source: user-curated|session-observation
+  confidence: high|medium|low|<0.3-0.9>
+  scope: global|project
   created: YYYY-MM-DD
   updated: YYYY-MM-DD
+  last_verified: YYYY-MM-DD
 ---
 
 # 标题
@@ -154,9 +198,9 @@ metadata:
 - 保留访问日期、适用版本和来源之间的分歧；聊天本身不是公开事实来源。
 - 用户确认的稳定需求可以写为 `user-confirmed, YYYY-MM-DD`，无需伪造外部引用。
 - 使用仓库相对路径；tracked memory 遵循仓库本身的分享边界。
-- `MEMORY.md` 每条索引写成 `[标题](file.md) — 一句话触发条件与结论`。
+- 全局 memory 的 INDEX.md 每条索引写成 `[标题](相对路径) — 一句话触发条件与结论`，按 6 维度分组。
 
-## 7. 处理矛盾
+## 9. 处理矛盾
 
 先尝试用版本、环境、适用范围或明确的 supersede 关系化解：
 
@@ -174,9 +218,9 @@ metadata:
 
 不要因措辞差异、补充细节或低影响更新打断用户。
 
-## 8. 收尾
+## 10. 收尾
 
 - 明确且无冲突的内容直接写入，不额外请求批准。
-- 没有合格候选时不创建文件；除非用户显式调用 `$my-learn`，否则无需报告“无内容”。
-- 有写入时在最终回复用一句话说明更新了哪些项目经验。
+- 没有合格候选时不创建文件；除非用户显式调用 `$my-learn`，否则无需报告"无内容"。
+- 有写入时在最终回复用一句话说明更新了哪些项目经验（含全局 memory 路径）。
 - 查看相关 diff，确认没有覆盖无关改动、没有重复索引、没有泄露敏感信息。
