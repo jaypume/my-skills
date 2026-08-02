@@ -5,7 +5,8 @@
 
 ### Memory 位置
 
-**全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。**项目层** `<repo>/.agents/memory/INDEX.md` 仅是代理入口。详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
+**全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。
+**项目层不保留任何 memory 文件**——全局路径由各项目 `AGENTS.md` / `CLAUDE.md` 声明。详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
 
 ### 6 维度分类（写入前先问）
 
@@ -26,7 +27,7 @@
 
 ### 操作要点
 
-1. 主线工作前先读项目层 `.agents/memory/INDEX.md`，按约定跳到全局 `~/.agents/memory/INDEX.md`，只按任务关键词、错误、组件和文件打开相关条目；目录不存在时正常继续。
+1. 主线工作前读项目 `AGENTS.md`（或 `CLAUDE.md`）确认全局 memory 路径，直接读全局 `~/.agents/memory/INDEX.md`，只按任务关键词、错误、组件和文件打开相关条目；目录不存在时正常继续。
 2. 优先复核当前代码、测试、正式文档和一手来源，不把 memory 当作已确认的实时事实。
 3. 正常完成任务，不为了记忆频繁询问或打断用户。
 4. 结束前把稳定需求、已确认决策、带原始来源的调研结论、用户纠错和非显然根因按 6 维度写到全局对应目录；memory 一条事实一个文件并更新 `~/.agents/memory/INDEX.md`。
@@ -35,7 +36,7 @@
 
 ### 命名约定
 
-- 文件名英文 kebab-case（git/CLI 友好）；frontmatter `name` 必须英文 kebab-case；`title` / `description` / 正文可用中文。
+- 文件名英文 kebab-case（git/CLI 友好）；frontmatter `name` 字段可用中文（YAML UTF-8）；`title` / `description` / 正文可用中文。
 - 索引文件用 `INDEX.md`，不用 `MEMORY.md`（避免被 Claude Code / pi 默认识别并接管）。
 
 遵循当前仓库的分享边界和 memory 格式；不记录凭据、机器绝对路径或无关完整日志。

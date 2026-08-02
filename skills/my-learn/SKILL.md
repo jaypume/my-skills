@@ -29,7 +29,10 @@ description: 召回并积累当前项目中可跨任务复用、稳定且非显�
 
 ## 2. Memory 位置与全局约定
 
-**全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。**项目层** `<project>/.agents/memory/INDEX.md` 仅是代理入口——只保留一个文件，内容指向全局。详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
+**全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。
+**项目层不保留任何 memory 文件**——全局路径由各项目 `AGENTS.md` / `CLAUDE.md` 声明（chezmoi 模板统一处理）。
+
+详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
 
 **索引文件名**：用 `INDEX.md`，不用 `MEMORY.md`——`MEMORY.md` 是 Claude Code / pi 等工具默认识别名，会被 auto-memory 机制接管。
 
@@ -60,9 +63,8 @@ description: 召回并积累当前项目中可跨任务复用、稳定且非显�
 2. 完整读取适用的 `AGENTS.md`、`CLAUDE.md`、`.gitignore`。
 3. 读取 [`assets/agents-rule.md`](assets/agents-rule.md)，根据现有协议生成完整变更预览。
 4. 一次展示并确认：
-   - 项目层 `<repo>/.agents/memory/INDEX.md` 的内容（代理模式：声明全局在 `~/.agents/memory/`）；
-   - 是否已有全局 `~/.agents/memory/` git 仓；没有则建议先 `git init` 并加 remote；
-   - 项目层 INDEX.md 是否纳入 git 跟踪（默认 tracked，让 agent 工具能找到路径约定）；
+   - 全局 `~/.agents/memory/` git 仓是否存在；没有则建议 `git init` + remote + GitHub private；
+   - 项目 `AGENTS.md`（或 `CLAUDE.md`）是否声明了"全局 memory 在 `~/.agents/memory/`"；
    - 是否需要同步现有的 AGENTS/CLAUDE 兼容关系。
 5. 只有用户确认后才执行预览中的变更。
 
@@ -72,7 +74,7 @@ Setup 必须遵守：
 - 已存在正确的 `CLAUDE.md -> AGENTS.md` symlink 时只修改 `AGENTS.md`。
 - 两个独立指令文件存在实质冲突时停止，请用户确定唯一真相源。
 - 使用 `<!-- my-learn:start -->` / `<!-- my-learn:end -->` 标记规则块；重复运行只更新该块，不追加副本。
-- 新建项目层 INDEX.md 时固定内容"代理模式 + 全局在 `~/.agents/memory/`"，不要自行发明其他标题。
+- 不在项目层创建 `.agents/memory/` 目录或文件——所有 memory 走全局。
 - 不把机器绝对路径写入可提交文件。
 
 ### Recall and capture
@@ -88,8 +90,8 @@ Setup 必须遵守：
 
 ## 5. 召回
 
-1. 先读项目层 `<project>/.agents/memory/INDEX.md`，按约定跳到全局 `~/.agents/memory/INDEX.md`。
-2. 目录或索引不存在时视为尚无历史，不报错、不在召回阶段擅自初始化。
+1. 读项目 `AGENTS.md`（或 `CLAUDE.md`）确认全局 memory 路径在 `~/.agents/memory/`。
+2. 读全局 `~/.agents/memory/INDEX.md`；目录或索引不存在时视为尚无历史，不报错、不在召回阶段擅自初始化。
 3. 用任务关键词、精确错误文本、组件、文件名、符号和技术名搜索全局 INDEX.md 的 6 维度分组。
 4. 只打开最相关的少量条目；不要一次加载整个目录。
 5. 将 memory 作为线索：
