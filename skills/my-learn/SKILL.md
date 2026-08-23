@@ -36,9 +36,9 @@ description: 召回并积累当前项目中可跨任务复用、稳定且非显�
 
 **索引文件名**：用 `INDEX.md`，不用 `MEMORY.md`——`MEMORY.md` 是 Claude Code / pi 等工具默认识别名，会被 auto-memory 机制接管。
 
-## 3. 6 维度分类（写入前先问）
+## 3. 判断口诀（写入前先问）
 
-每条 memory 写到全局对应子目录：
+公共知识写到全局对应子目录，项目专有写项目 `AGENTS.md` / 既有真相源：
 
 ```
 1. 个人偏好？         → personal/
@@ -46,10 +46,10 @@ description: 召回并积累当前项目中可跨任务复用、稳定且非显�
 3. 通用工程 gotcha？  → common/
 4. 特定工具/库的坑？   → external/
 5. 跨项目领域知识？    → domains/<field>/
-6. 只此一项目用？      → projects/<github-id>/<repo>/
+6. 项目专有偏好/约定？ → 项目 AGENTS.md（或项目既有真相源）
 ```
 
-前 5 个是跨项目维度，第 6 个是项目维度。换项目还能用 → 跨项目；只本项目用 → projects。
+前 5 个是跨项目维度；项目专有内容不再新增到全局 `projects/`，更新项目 `AGENTS.md` / 既有真相源。
 
 判断更细的 `metadata.type` 字段保留原 5 档（`requirement | decision | research | pitfall | convention`），与维度正交。
 
@@ -92,7 +92,7 @@ Setup 必须遵守：
 
 1. 读项目 `AGENTS.md`（或 `CLAUDE.md`）确认全局 memory 路径在 `~/.agents/memory/`。
 2. 读全局 `~/.agents/memory/INDEX.md`；目录或索引不存在时视为尚无历史，不报错、不在召回阶段擅自初始化。
-3. 用任务关键词、精确错误文本、组件、文件名、符号和技术名搜索全局 INDEX.md 的 6 维度分组。
+3. 用任务关键词、精确错误文本、组件、文件名、符号和技术名搜索全局 INDEX.md 的维度分组（5 跨项目维度 + 项目专有落点）。
 4. 只打开最相关的少量条目；不要一次加载整个目录。
 5. 将 memory 作为线索：
    - 易漂移且可低成本验证的事实，先从当前代码、测试或一手来源复核；
@@ -130,7 +130,7 @@ Setup 必须遵守：
 写入前搜索现有 spec、ADR、计划、项目文档、代码注释、测试和 memory：
 
 1. 需求、架构和调研已有正式载体时，更新该唯一真相源；memory 只保存简短结论、触发词和仓库相对链接。
-2. 没有正式载体且结论足够稳定时，在全局 memory 写完整的精炼条目（按 6 维度选目录）。
+2. 没有正式载体且结论足够稳定时，按判断口诀落位：公共知识在全局 memory 写精炼条目，项目专有写项目 `AGENTS.md` / 既有真相源。
 3. 同一事实已存在时更新原条目，不创建近义副本。
 4. 细粒度 debug 只在当前任务本来就授权修改代码、且需要解释非显然 invariant 或 "why" 时写代码注释；遵循仓库注释语言，不写排错流水账。
 5. 代码、测试、文档或 code graph 已足够发现的事实，跳过或只记录定位索引。
@@ -144,7 +144,7 @@ Setup 必须遵守：
 
 | source | 触发方式 | confidence | 落位 |
 |---|---|---|---|
-| `user-curated` | 用户显式调用 `$my-learn` / `$my-learn setup`，由 agent 协助回忆+沉淀 | 默认 `high` | 6 维度顶层目录 |
+| `user-curated` | 用户显式调用 `$my-learn` / `$my-learn setup`，由 agent 协助回忆+沉淀 | 默认 `high` | 全局对应维度顶层目录 |
 | `session-observation` | hook 自动观察 session 提取（ECC v2.1 / Claude Code auto memory） | 0.3-0.9 自评 | 对应维度内 `_auto/` 子目录 |
 
 agent 加载时按 `source` 优先级 `user-curated > session-observation`。这保证人工 gate（my-learn）始终压过自动积累（hook），避免噪声污染主索引。`last_verified` 半年 review 时同标准处理两类条目，但 `session-observation` 类更激进：连续半年（约 180 天）无命中可触发 TTL 清理。
@@ -200,7 +200,7 @@ metadata:
 - 保留访问日期、适用版本和来源之间的分歧；聊天本身不是公开事实来源。
 - 用户确认的稳定需求可以写为 `user-confirmed, YYYY-MM-DD`，无需伪造外部引用。
 - 使用仓库相对路径；tracked memory 遵循仓库本身的分享边界。
-- 全局 memory 的 INDEX.md 每条索引写成 `[标题](相对路径) — 一句话触发条件与结论`，按 6 维度分组。
+- 全局 memory 的 INDEX.md 每条索引写成 `[标题](相对路径) — 一句话触发条件与结论`，按维度分组；项目专有内容只索引到项目 `AGENTS.md` / 真相源。
 
 ## 9. 处理矛盾
 

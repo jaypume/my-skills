@@ -8,7 +8,7 @@
 **全局唯一真相源**：`~/.agents/memory/`（独立 git 仓，push 到 GitHub private）。
 **项目层不保留任何 memory 文件**——全局路径由各项目 `AGENTS.md` / `CLAUDE.md` 声明。详细约定见 [[~/.agents/memory/personal/memory-location-convention]]。
 
-### 6 维度分类（写入前先问）
+### 判断口诀（写入前先问）
 
 ```
 1. 个人偏好？         → personal/
@@ -16,12 +16,14 @@
 3. 通用工程 gotcha？  → common/
 4. 特定工具/库的坑？   → external/
 5. 跨项目领域知识？    → domains/<field>/
-6. 只此一项目用？      → projects/<github-id>/<repo>/
+6. 项目专有偏好/约定？ → 项目 AGENTS.md（或项目既有真相源）
 ```
+
+前 5 个是跨项目维度；项目专有内容不再新增到全局 `projects/`。
 
 ### 触发权重（frontmatter `source` 字段）
 
-- `user-curated`（my-learn 显式触发） → 默认 `confidence: high`，落 6 维度顶层
+- `user-curated`（my-learn 显式触发） → 默认 `confidence: high`，落全局对应维度顶层
 - `session-observation`（hook 自动积累） → `confidence: 0.3-0.9`，落对应维度内 `_auto/`
 - agent 加载优先级 `user-curated > session-observation`
 
@@ -30,7 +32,7 @@
 1. 主线工作前读项目 `AGENTS.md`（或 `CLAUDE.md`）确认全局 memory 路径，直接读全局 `~/.agents/memory/INDEX.md`，只按任务关键词、错误、组件和文件打开相关条目；目录不存在时正常继续。
 2. 优先复核当前代码、测试、正式文档和一手来源，不把 memory 当作已确认的实时事实。
 3. 正常完成任务，不为了记忆频繁询问或打断用户。
-4. 结束前把稳定需求、已确认决策、带原始来源的调研结论、用户纠错和非显然根因按 6 维度写到全局对应目录；memory 一条事实一个文件并更新 `~/.agents/memory/INDEX.md`。
+4. 结束前把稳定需求、已确认决策、带原始来源的调研结论、用户纠错和非显然根因分类：公共知识写全局对应维度，项目专有偏好/约定写本项目 `AGENTS.md` / 既有真相源；memory 一条事实一个文件并更新 `~/.agents/memory/INDEX.md`。
 5. 已有 spec、ADR 或项目文档时以其为准，memory 只留结论与链接；debug 细节能从代码、测试、注释或 code graph 找到时不重复保存。
 6. 明确内容直接写入；仅在新旧需求、架构决策或可靠调研证据发生无法化解的实质冲突时询问用户。
 
