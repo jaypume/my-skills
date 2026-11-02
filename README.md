@@ -19,6 +19,8 @@ skills/
 文件 `~/.config/my-skills/config.toml`，各 skill 按命名空间读取；
 `config.example.toml` 仅作为字段示例参考，不会被读取。
 
+[my-design-doc](skills/my-design-doc/SKILL.md) 用于设计文档编写与结构优化，按需组织方案对比、图表和验证依据。
+
 ## 使用
 
 先查看仓库内可用的 skills：
