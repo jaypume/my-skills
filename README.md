@@ -78,6 +78,16 @@ cd my-skills
 npx skills add . --list
 ```
 
+新增自研 skill 时，同时在 `.gitignore` 中为 `skills/<skill-name>/` 添加白名单。
+
+本机可将 `~/.agents/skills` 整目录软链到此仓库的 `skills/`，让开发源码与启用入口一致。
+第三方技能仍通过 `npx skills add <source> -g` 安装；它们和其他未列入白名单的本地技能
+默认被 Git 忽略。第三方来源记录继续由 skills CLI 管理；此模式下自研技能通过 Git
+更新，不通过 skills CLI 覆盖安装。
+
+本地 `npx skills add . --list` 会发现安装目录中的第三方技能；远程仓库只包含已提交的
+自研技能。需要检查发布范围时，以 `git ls-files skills` 和提交 diff 为准。
+
 提交和推送使用普通 Git 流程：
 
 ```bash

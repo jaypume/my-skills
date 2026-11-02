@@ -1,3 +1,13 @@
+# skills/ 同时作为本机技能安装目录；仅纳管明确列出的自研技能。
+/skills/*
+!/skills/my-commit/
+!/skills/my-curate-git-history/
+!/skills/my-design-doc/
+!/skills/my-goal-prompt/
+!/skills/my-learn/
+!/skills/my-squash/
+!/skills/my-wiki/
+
 # 机器本地配置：本机信息统一放在 ~/.config/my-skills/config.toml，
 # 仓库不再保留任何 skill 目录下的本地配置文件。
 # 防御性兜底：若有人误把旧式本地配置放进仓库，也拒绝提交。
