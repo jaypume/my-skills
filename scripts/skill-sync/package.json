@@ -1,0 +1,19 @@
+{
+  "name": "my-skills-sync",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "plan": "node sync.mjs plan",
+    "sync": "node sync.mjs sync",
+    "update": "node sync.mjs update",
+    "test": "node --test sync.test.mjs"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.6",
+    "smol-toml": "^1.9.1",
+    "yaml": "^2.9.1"
+  }
+}

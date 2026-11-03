@@ -13,3 +13,8 @@
 # 防御性兜底：若有人误把旧式本地配置放进仓库，也拒绝提交。
 skills/*/config.local.toml
 skills/*/.env
+
+# 同步状态、CLI 日志与可恢复的卸载/更新备份。
+/.local/
+node_modules/
+__pycache__/

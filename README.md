@@ -1,29 +1,21 @@
 # my-skills
 
-个人维护的 Agent Skills 集合，遵循 [Agent Skills](https://agentskills.io)
-规范，并使用 skills.sh 支持的 `skills/<name>/SKILL.md` 仓库布局。
+个人维护的自研 Agent Skills 与第三方技能同步清单，遵循 [Agent Skills](https://agentskills.io) 规范。
 
 ## 目录
 
 ```text
-skills/
-├── my-commit/
-│   └── SKILL.md
-└── my-wiki/
-    ├── SKILL.md
-    └── config.example.toml
+skills.yaml          # 第三方仓库白名单、分类简介与 agent 路径
+skills/              # 自研技能源码及被 Git 忽略的第三方安装
+scripts/skill-sync/  # 同步脚本、测试、package.json 与 pnpm-lock.yaml
 ```
 
-每个 skill 至少包含一个 `SKILL.md`，其 YAML frontmatter 必须提供唯一的
-`name` 和清晰的中文 `description`。机器相关配置集中在用户家目录的共享
-文件 `~/.config/my-skills/config.toml`，各 skill 按命名空间读取；
-`config.example.toml` 仅作为字段示例参考，不会被读取。
-
-[my-design-doc](skills/my-design-doc/SKILL.md) 用于设计文档编写与结构优化，按需组织方案对比、图表和验证依据。
+每个自研技能位于 `skills/<name>/SKILL.md`，frontmatter 提供唯一的 `name` 和中文
+`description`；所需本机配置通过 `config.example.toml` 说明，实际读取下文的共享配置文件。
 
 ## 使用
 
-先查看仓库内可用的 skills：
+从 GitHub 查看本仓库发布的自研技能：
 
 ```bash
 npx skills add jaypume/my-skills --list
@@ -35,36 +27,24 @@ npx skills add jaypume/my-skills --list
 npx skills add jaypume/my-skills --skill my-commit -g
 ```
 
-全局安装全部 skills：
-
-```bash
-npx skills add jaypume/my-skills --skill '*' -g
-```
-
-也可以指定 agent，并用 `-y` 跳过交互确认：
+安装全部自研技能时使用 `--skill '*'`；指定 agent 并跳过确认可使用：
 
 ```bash
 npx skills add jaypume/my-skills --skill my-commit -g -a codex -y
 ```
 
-私有仓库或需要 SSH 身份验证时，直接使用 Git URL：
+个人环境中的第三方白名单与 agent 软链接通过下文的「同步技能」命令维护。
 
-```bash
-npx skills add git@github.com:jaypume/my-skills.git --list
-```
+## 本机配置
 
-
-## 配置
-
-本机配置集中在 `~/.config/my-skills/config.toml`，被所有 my-* skill 共享读取。
-各 skill 只关心自己命名空间下的字段，避免互相污染。
+需要本机配置的自研技能从 `~/.config/my-skills/config.toml` 读取各自命名空间。
 
 首次使用时，参考 `skills/<skill-name>/config.example.toml` 创建该文件，
 并把示例中需要的本机路径填入对应 skill 的表。例如：
 
 ```toml
 [my-wiki]
-wiki_root = "~/code/notes/selfos/wiki"
+wiki_root = "~/wiki"
 ```
 
 该文件不应提交到任何仓库；路径不存在或字段缺失时，相应 skill 应当停止
@@ -83,9 +63,9 @@ npx skills add . --list
 新增自研 skill 时，同时在 `.gitignore` 中为 `skills/<skill-name>/` 添加白名单。
 
 本机可将 `~/.agents/skills` 整目录软链到此仓库的 `skills/`，让开发源码与启用入口一致。
-第三方技能仍通过 `npx skills add <source> -g` 安装；它们和其他未列入白名单的本地技能
-默认被 Git 忽略。第三方来源记录继续由 skills CLI 管理；此模式下自研技能通过 Git
-更新，不通过 skills CLI 覆盖安装。
+第三方技能通过 `skills.yaml` 声明，由同步脚本调用 skills CLI 安装；它们和其他未列入
+Git 白名单的本地技能默认被忽略。第三方来源记录继续由 skills CLI 管理；自研技能
+通过 Git 更新，不通过 skills CLI 覆盖安装。
 
 本地 `npx skills add . --list` 会发现安装目录中的第三方技能；远程仓库只包含已提交的
 自研技能。需要检查发布范围时，以 `git ls-files skills` 和提交 diff 为准。
@@ -98,6 +78,63 @@ git commit -m "feat: add <skill-name> skill"
 git push
 ```
 
+## 同步技能
+
+编辑 [`skills.yaml`](skills.yaml) 的第三方白名单与 agent 入口。需要 Node.js 22+、pnpm 和 Git；
+安装、卸载由 `npx skills` 执行，工具与依赖集中在 `scripts/skill-sync/`。在仓库根目录运行：
+
+```bash
+pnpm --dir scripts/skill-sync install --frozen-lockfile  # 首次安装依赖
+pnpm --dir scripts/skill-sync run plan    # 只读预览
+pnpm --dir scripts/skill-sync run sync    # 同步白名单与软链接
+pnpm --dir scripts/skill-sync run update  # 按清单来源更新第三方技能
+pnpm --dir scripts/skill-sync test        # 运行测试
+```
+
+`skills.yaml` 用 `agents` 配置入口路径，用 `repositories` 声明完整 GitHub URL 与技能名。
+仓库按通用用途到专用用途分组，分类和中文简介直接维护在清单中。例如（条目节选）：
+
+```yaml
+agents:
+  claude-code: ~/.claude/skills
+  codex: ~/.codex/skills
+
+repositories:
+  https://github.com/anthropics/skills:
+    - frontend-design
+```
+
+新增 agent 按 `名称: 路径` 添加，默认同步全部白名单技能与 Git 跟踪的自研技能。
+需要筛选技能或禁用链接时，将对应 agent 展开：
+
+```yaml
+agents:
+  oh-my-pi:
+    path: ~/.omp/agent/skills
+    skills: [my-commit, frontend-design]
+```
+
+展开配置必填 `path`，默认 `enabled: true`、`skills: ["*"]`；设为 `enabled: false`、使用
+空技能列表或移出配置，会移除该 agent 对应的已管理链接。
+同名技能只能声明一次；`agents`、`repositories` 两个根字段必须保留，清空时写 `{}`。
+机器专属覆盖放在 `~/.config/my-skills/config.toml` 的 `[skill-sync.agents.<agent>]`，字段同上。
+这些选项只控制链接维护；Codex 等工具对 `~/.agents/skills` 的直接发现不受影响。
+
+共享入口 `~/.agents/skills` 应指向本仓库的 `skills/`。只卸载此前接管、后来移出白名单的
+第三方技能；自研技能、`UNMANAGED` 安装、agent 自有目录与外部链接均保留。
+状态、日志及更新/卸载备份保存在 `.local/skill-sync/`；包操作失败时恢复该批包，已成功的操作
+保留，修复后可重跑。备份需手动清理；运行期间避免用 Skills Deck 或 CLI 并发修改技能。
+
+macOS 已验证；Windows 尚需实机验证，创建软链接通常需要开发者模式或管理员终端。
+
+## 界面技能选用
+
+候选及用途见 `skills.yaml` 的 UI 和 SwiftUI 分类。Tauri 项目共享 Web 前端、设计 tokens
+和组件，再适配平台布局与系统能力。视觉方向从 `frontend-design`、`impeccable` 中选一项
+主导；按需补充 `ui-ux-pro-max` 和平台指南，SwiftUI 技能用于实际的 SwiftUI 代码。
+
+Impeccable 首次使用会下载配套引擎；UI UX Pro Max 搜索需要 Python 3，结果须核对产品
+与技术栈。界面交付仍需检查实际渲染与 Tauri 宿主体验。
 
 ## 参考
 

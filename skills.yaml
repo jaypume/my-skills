@@ -1,0 +1,79 @@
+# 第三方技能白名单；移除已接管条目后，sync 会卸载并保留备份。
+# agent 默认同步全部清单技能及 Git 跟踪的自研技能。
+agents:
+  claude-code: ~/.claude/skills
+  codex: ~/.codex/skills
+  oh-my-pi: ~/.omp/agent/skills
+  pi: ~/.pi/agent/skills
+  opencode: ~/.config/opencode/skills
+
+repositories:
+  # 🛠️ 开发流程与编码规范
+
+  # 规范驱动开发工具，将需求组织为提案、设计、实施任务和归档流程。
+  https://github.com/Fission-AI/openspec:
+    - openspec-apply-change
+    - openspec-archive-change
+    - openspec-continue-change
+    - openspec-explore
+    - openspec-ff-change
+    - openspec-new-change
+    - openspec-onboard
+    - openspec-propose
+    - openspec-sync-specs
+    - openspec-update-change
+
+  # 基于 Karpathy 编码经验的行为准则，减少过度设计和无关改动。
+  https://github.com/multica-ai/andrej-karpathy-skills:
+    - karpathy-guidelines
+
+  # 🌐 浏览器自动化与调试
+
+  # Playwright 浏览器自动化，用于页面测试、截图和响应式布局检查。
+  https://github.com/lackeyjb/playwright-skill:
+    - playwright-skill
+
+  # 通过 Chrome 调试协议连接已有浏览器会话，检查页面、执行脚本和截图。
+  https://github.com/pasky/chrome-cdp-skill:
+    - chrome-cdp
+
+  # 🧩 技能发现与管理
+
+  # Agent Skills 发现与管理工具，提供技能搜索、安装和更新能力。
+  https://github.com/vercel-labs/skills:
+    - find-skills
+
+  # 🎨 UI 设计与品牌视觉
+
+  # 通用 Agent 技能集合，涵盖前端视觉设计、文档处理等任务。
+  https://github.com/anthropics/skills:
+    - frontend-design
+
+  # 前端界面设计与打磨，改善视觉层级、排版、配色和可用性。
+  https://github.com/pbakaus/impeccable:
+    - impeccable
+
+  # UI/UX 设计资料与搜索工具，辅助选择配色、字体、布局和图表。
+  https://github.com/nextlevelbuilder/ui-ux-pro-max-skill:
+    - ui-ux-pro-max
+
+  # 各平台界面设计规范，辅助检查交互、布局与可访问性。
+  https://github.com/ehmo/platform-design-skills:
+    - android-design-guidelines
+    - ios-design-guidelines
+    - macos-design-guidelines
+    - web-design-guidelines
+
+  # 图像生成与品牌视觉技能，辅助制作界面参考图、品牌规范和视觉素材。
+  https://github.com/Leonxlnx/imagegen-skills:
+    - brandkit
+
+  # 🍎 SwiftUI 开发与评审
+
+  # SwiftUI 实现与重构指导，关注状态管理、布局、性能和现代 API。
+  https://github.com/AvdLee/SwiftUI-Agent-Skill:
+    - swiftui-expert-skill
+
+  # SwiftUI 代码评审，检查现代 API 用法、可维护性与性能。
+  https://github.com/twostraws/SwiftUI-Agent-Skill:
+    - swiftui-pro
