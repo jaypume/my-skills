@@ -347,7 +347,7 @@ export class SkillSync {
     try {
       for (const name of names) backups.set(name, this.archive(name, 'previous'));
       if (source) {
-        this.cli(['add', source, '--skill', ...names, '-g', '--agent', 'codex', '-y']);
+        this.cli(['add', source, '--full-depth', '--skill', ...names, '-g', '--agent', 'codex', '-y']);
         const after = this.lock().skills;
         for (const name of names) {
           const directory = path.join(this.library, name);

@@ -84,7 +84,7 @@ test('只安装指定缺失技能，保留未管理的额外安装', t => {
   const f = fixture(t);
   f.pkg('extra', { source: 'other/skills' });
   f.sync();
-  assert.deepEqual(f.calls, [['add', 'example/skills', '--skill', 'remote-one', '-g', '--agent', 'codex', '-y']]);
+  assert.deepEqual(f.calls, [['add', 'example/skills', '--full-depth', '--skill', 'remote-one', '-g', '--agent', 'codex', '-y']]);
   assert.deepEqual(f.manager().plan().extras, ['extra']);
   assert.equal(exists(path.join(f.home, '.claude/skills/extra')), false);
 });

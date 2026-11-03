@@ -37,6 +37,27 @@ repositories:
   https://github.com/pasky/chrome-cdp-skill:
     - chrome-cdp
 
+  # 📝 文档写作与图表
+
+  # 通用开发技能集，提供清晰写作指导与 Mermaid 软件架构、流程和数据模型图解。
+  https://github.com/softaworks/agent-toolkit:
+    - writing-clearly-and-concisely
+    - mermaid-diagrams
+
+  # Mermaid 图表渲染与美化，支持导出 SVG、PNG 和终端字符图。
+  https://github.com/imxv/Pretty-mermaid-skills:
+    - pretty-mermaid
+
+  # 🧰 逆向分析与云端运维
+
+  # REA 逆向分析工具，检查程序包、二进制、固件和应用运行行为。
+  https://github.com/morluto/rea:
+    - reverse-engineer-anything
+
+  # 阿里云运维技能集，支持 ECS 远程命令、文件传输和端口转发。
+  https://github.com/aliyun/alibabacloud-aiops-skills:
+    - alibabacloud-workbench-cli
+
   # 🧩 技能发现与管理
 
   # Agent Skills 发现与管理工具，提供技能搜索、安装和更新能力。
