@@ -1,8 +1,9 @@
 # skills/ 同时作为本机技能安装目录；仅纳管明确列出的自研技能。
 /skills/*
+!/skills/my-app-ui/
 !/skills/my-commit/
 !/skills/my-curate-git-history/
-!/skills/my-design-doc/
+!/skills/my-diagrams/
 !/skills/my-goal-prompt/
 !/skills/my-learn/
 !/skills/my-squash/

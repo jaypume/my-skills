@@ -38,7 +38,7 @@ pnpm --dir scripts/skill-sync test        # 验证同步脚本行为
 
 - 目录名与 `SKILL.md` 的 `name` 一致，frontmatter 只保留 `name`、`description`；description、正文和注释优先使用中文，表达简明、具体。
 - 不添加 `agents/openai.yaml`，避免维护重复的展示文案。
-- 界面技能主要服务 Tauri 的共享 Web 前端与 Rust 业务逻辑。视觉方向从 `frontend-design`、`impeccable` 中选一项主导，其他设计技能按需补充；平台指南约束体验，SwiftUI 技能用于实际的 SwiftUI 代码。
+- App 界面与图表的个人约定分别维护在 `my-app-ui`、`my-diagrams`；项目全局指令只保留入口，第三方技能按任务补充。
 
 ## 本机配置与公开边界
 

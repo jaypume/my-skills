@@ -39,9 +39,14 @@ repositories:
 
   # 📝 文档写作与图表
 
-  # 通用开发技能集，提供清晰写作指导与 Mermaid 软件架构、流程和数据模型图解。
+  # 技术文档写作、设计提案与审校，统一结构、取舍说明和证据要求。
+  https://github.com/riekelt/technical-writer:
+    - technical-writing
+    - writing-design-docs
+    - reviewing-technical-prose
+
+  # Mermaid 软件架构、流程和数据模型图解。
   https://github.com/softaworks/agent-toolkit:
-    - writing-clearly-and-concisely
     - mermaid-diagrams
 
   # Mermaid 图表渲染与美化，支持导出 SVG、PNG 和终端字符图。

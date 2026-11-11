@@ -225,7 +225,10 @@ export class SkillSync {
       const parts = entry.split('/');
       if (parts.length === 3 && parts[0] === 'skills' && parts[2] === 'SKILL.md') {
         const name = validName(parts[1]);
-        if (!isFile(path.join(this.localLibrary, name, 'SKILL.md'))) throw new SyncError(`Tracked local skill is missing: ${name}`);
+        const entrypoint = path.join(this.localLibrary, name, 'SKILL.md');
+        // 工作区删除立即停用技能，不依赖暂存或提交；异常入口仍报错。
+        if (!exists(entrypoint)) continue;
+        if (!isFile(entrypoint)) throw new SyncError(`Tracked local skill is not a file: ${name}`);
         names.add(name);
       }
     }

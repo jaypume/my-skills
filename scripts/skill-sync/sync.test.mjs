@@ -80,6 +80,34 @@ test('收编已有包，预览只读，重复同步收敛且不重新安装', t 
   for (const key of ['install', 'remove', 'links', 'adopt']) assert.deepEqual(result[key], []);
 });
 
+test('工作区删除自研技能后解除入口，保留其他文件与 Git 暂存状态', t => {
+  const f = fixture(t);
+  f.configure({ names: [] });
+  f.pkg('my-other', { tracked: true });
+  f.sync();
+  const index = fs.readFileSync(path.join(f.repo, '.git/index'));
+  const notes = path.join(f.library, 'my-local/notes.md');
+  fs.writeFileSync(notes, 'Keep this file');
+  fs.unlinkSync(path.join(f.library, 'my-local/SKILL.md'));
+
+  assert.deepEqual(f.manager().plan().local, ['my-other']);
+  const result = f.sync();
+  assert.equal(exists(path.join(f.home, '.claude/skills/my-local')), false);
+  assert.equal(exists(path.join(f.home, '.claude/skills/my-other')), true);
+  assert.equal(fs.readFileSync(notes, 'utf8'), 'Keep this file');
+  assert.deepEqual(fs.readFileSync(path.join(f.repo, '.git/index')), index);
+  assert.deepEqual(result.links, []);
+  assert.deepEqual(f.calls, []);
+});
+
+test('自研技能入口被替换为目录时仍报错', t => {
+  const f = fixture(t);
+  const entrypoint = path.join(f.library, 'my-local/SKILL.md');
+  fs.unlinkSync(entrypoint);
+  fs.mkdirSync(entrypoint);
+  assert.throws(() => f.manager().plan(), /Tracked local skill is not a file: my-local/);
+});
+
 test('只安装指定缺失技能，保留未管理的额外安装', t => {
   const f = fixture(t);
   f.pkg('extra', { source: 'other/skills' });

@@ -62,6 +62,9 @@ npx skills add . --list
 
 新增自研 skill 时，同时在 `.gitignore` 中为 `skills/<skill-name>/` 添加白名单。
 
+本机开发的新技能可先用 `git add -N skills/<skill-name>/SKILL.md` 登记入口，
+让同步工具识别；此操作不暂存文件内容，正式提交仍按独立请求执行。
+
 本机可将 `~/.agents/skills` 整目录软链到此仓库的 `skills/`，让开发源码与启用入口一致。
 第三方技能通过 `skills.yaml` 声明，由同步脚本调用 skills CLI 安装；它们和其他未列入
 Git 白名单的本地技能默认被忽略。第三方来源记录继续由 skills CLI 管理；自研技能
@@ -69,6 +72,9 @@ Git 白名单的本地技能默认被忽略。第三方来源记录继续由 ski
 
 本地 `npx skills add . --list` 会发现安装目录中的第三方技能；远程仓库只包含已提交的
 自研技能。需要检查发布范围时，以 `git ls-files skills` 和提交 diff 为准。
+
+删除自研技能的 `SKILL.md` 后，下一次同步会解除其已管理入口，无需先暂存或提交；
+同步不会删除该目录中的其他文件。
 
 提交和推送使用普通 Git 流程：
 
@@ -127,11 +133,21 @@ agents:
 
 macOS 已验证；Windows 尚需实机验证，创建软链接通常需要开发者模式或管理员终端。
 
+## 文档技能选用
+
+技术文档统一使用 `technical-writing`；设计提案、RFC 和方案重构叠加
+`writing-design-docs`，交付前由 `reviewing-technical-prose` 审校。
+这三个第三方技能通过 `skills.yaml` 纳管，按文档任务加载；技能分工由各 Agent
+的全局指令统一维护。图表约定见 [my-diagrams](skills/my-diagrams/SKILL.md)，
+Mermaid 编写和渲染按需补充第三方技能。
+
+用户要求、项目权威格式及共享 Agent 指令中的本地约定，优先于第三方技能的
+通用风格。第三方正文保持上游原样，更新仍通过同步工具完成。
+
 ## 界面技能选用
 
-候选及用途见 `skills.yaml` 的 UI 和 SwiftUI 分类。Tauri 项目共享 Web 前端、设计 tokens
-和组件，再适配平台布局与系统能力。视觉方向从 `frontend-design`、`impeccable` 中选一项
-主导；按需补充 `ui-ux-pro-max` 和平台指南，SwiftUI 技能用于实际的 SwiftUI 代码。
+个人技术栈、设计系统、窗口记忆和宿主验收约定见 [my-app-ui](skills/my-app-ui/SKILL.md)。
+第三方候选及用途见 `skills.yaml` 的 UI 和 SwiftUI 分类，按本次界面改动选择。
 
 Impeccable 首次使用会下载配套引擎；UI UX Pro Max 搜索需要 Python 3，结果须核对产品
 与技术栈。界面交付仍需检查实际渲染与 Tauri 宿主体验。
