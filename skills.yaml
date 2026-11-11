@@ -54,6 +54,10 @@ repositories:
   https://github.com/morluto/rea:
     - reverse-engineer-anything
 
+  # Craft Anything 软件调查工具，分析已发布应用并记录可追溯证据。
+  https://github.com/storytold/craft-anything:
+    - craft-anything
+
   # 阿里云运维技能集，支持 ECS 远程命令、文件传输和端口转发。
   https://github.com/aliyun/alibabacloud-aiops-skills:
     - alibabacloud-workbench-cli
