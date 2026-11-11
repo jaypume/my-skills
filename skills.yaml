@@ -67,6 +67,12 @@ repositories:
   https://github.com/aliyun/alibabacloud-aiops-skills:
     - alibabacloud-workbench-cli
 
+  # Cloudflare SaaS 开发，覆盖产品选型、Workers 规范和开发部署。
+  https://github.com/cloudflare/skills:
+    - cloudflare
+    - workers-best-practices
+    - wrangler
+
   # 🧩 技能发现与管理
 
   # Agent Skills 发现与管理工具，提供技能搜索、安装和更新能力。
